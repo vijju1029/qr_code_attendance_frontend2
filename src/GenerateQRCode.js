@@ -11,7 +11,7 @@ const GenerateQRCode = () => {
   const handleGenerateQR = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/register/",
+        "https://qr-code-attendance-backend2.onrender.com",
         {
           employee_id: employeeId,
           name: name,
@@ -21,7 +21,7 @@ const GenerateQRCode = () => {
       );
 
       if (response.data.qr_code) {
-        setQrUrl(`http://127.0.0.1:8000${response.data.qr_code}`);
+        setQrUrl(`https://qr-code-attendance-backend2.onrender.com${response.data.qr_code}`);
       } else {
         console.error("QR Code not received");
       }
