@@ -7,26 +7,37 @@ const GenerateQRCode = () => {
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("");
   const [qrUrl, setQrUrl] = useState("");
+  const [error, setError] = useState("");
+
+  // ✅ Correct API URL
+  const API_URL = "https://qr-code-attendance-backend2.onrender.com/api/register/";
 
   const handleGenerateQR = async () => {
     try {
       const response = await axios.post(
-        "https://qr-code-attendance-backend2.onrender.com",
+        API_URL,  // ✅ Correct API URL
         {
           employee_id: employeeId,
           name: name,
           department: department,
         },
-        { headers: { "Content-Type": "application/json" } }
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // ✅ Important for authentication & cookies
+        }
       );
 
       if (response.data.qr_code) {
         setQrUrl(`https://qr-code-attendance-backend2.onrender.com${response.data.qr_code}`);
+        setError(""); // Clear error if request is successful
       } else {
-        console.error("QR Code not received");
+        setError("QR Code not received.");
       }
     } catch (error) {
-      console.error("Error generating QR:", error.message);
+      console.error("Error generating QR:", error.response?.data || error.message);
+      setError("Error generating QR. Please try again.");
     }
   };
 
@@ -53,6 +64,7 @@ const GenerateQRCode = () => {
       />
       <button onClick={handleGenerateQR}>Generate QR Code</button>
       {qrUrl && <img src={qrUrl} alt="QR Code" />}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };
